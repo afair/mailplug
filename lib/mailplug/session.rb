@@ -1,7 +1,7 @@
 module Mailplug
   class Session
     STATES = %w{ready connect helo mail_from rcpt_to data save disconnect}
-    ACTIONS = %w{accept error defer pretend drop}
+    ACTIONS = %w{accept skip error defer pretend drop}
     attr_accessor :state, :connection, :host, :sender, :recipients, :data, :memo
 
     def initialize(config={})

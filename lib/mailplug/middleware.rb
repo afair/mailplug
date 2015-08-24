@@ -135,11 +135,6 @@ module Mailplug
       :bad_user => [:skip, 251, "Requested action not taken: mailbox unavailable"]
     }
 
-    def mailbox_unavailable(text="")
-      action('defer', "450 Requested mail action not taken: mailbox unavailable")
-      true
-    end
-
     ############################################################################
     # Helpers
     ############################################################################
