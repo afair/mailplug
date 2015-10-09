@@ -50,94 +50,99 @@ module Mailplug
     ############################################################################
 
     def connect(remote_ip)
-      true
+      ok
     end
 
     def helo(server_name)
-      true
+      ok
     end
 
     def mail_from(email)
-      true
+      ok
     end
 
     def rcpt_to(email)
-      true
+      ok
     end
 
     def data
-      true
+      ok
     end
 
     def data_line(line)
-      true
+      ok
     end
 
-    def data_stop
-      true
+    def received
+      ok
     end
 
-    def save # false(i don't queue), true (i queued), error msg
-      true
+    # Call to perform a store/save/queue. Return nil if you don't save and pass
+    # the responsibility down the chain. Otherwise, return ok or error.
+    def save
+      nil
     end
 
     def quit
-      true
+      ok
     end
 
     def disconnect
-      true
+      ok
     end
 
     def header(name, value)
-      true
+      ok
     end
 
-    def abort(code, msg) # Stop it with reason
-      true
-    end
-
-    def continue # don't stop
-      true
-    end
 
     ############################################################################
     # Responders (from http://www.greenend.org.uk/rjk/tech/smtpreplies.html)
-    #
-    # 200 (nonstandard success response, see rfc876)
-    # 211	System status, or system help reply
-    # 214	Help message
-    # 220	<domain> Service ready
-    # 221	<domain> Service closing transmission channel
-    # 250	Requested mail action okay, completed
-    # 251	User not local; will forward to <forward-path>
-    # 252	Cannot VRFY user, but will accept message and attempt delivery
-    # 354	Start mail input; end with <CRLF>.<CRLF>
-    # 421	<domain> Service not available, closing transmission channel
-    # 450	Requested mail action not taken: mailbox unavailable
-    # 451	Requested action aborted: local error in processing
-    # 452	Requested action not taken: insufficient system storage
-    # 500	Syntax error, command unrecognised
-    # 501	Syntax error in parameters or arguments
-    # 502	Command not implemented
-    # 503	Bad sequence of commands
-    # 504	Command parameter not implemented
-    # 521	<domain> does not accept mail (see rfc1846)
-    # 530	Access denied (???a Sendmailism)
-    # 550	Requested action not taken: mailbox unavailable
-    # 551	User not local; please try <forward-path>
-    # 552	Requested mail action aborted: exceeded storage allocation
-    # 553	Requested action not taken: mailbox name not allowed
-    # 554	Transaction failed
-    ############################################################################
-
-    REPLY = {
-      :bad_user => [:skip, 251, "Requested action not taken: mailbox unavailable"]
+    # accpeted limit server blocked content other mailbox recipient
+    RESPONSES = {
+      remote_badhost:     "",
+      remote_rbl:         "",
+      remote_connections: "",
+      remote_rate_limit:  "",
+      remote_rejected:    "",
+      server_unavailable: "",
+      sender_bad:         "",
+      sender_rejected:    "",
+      sender_reputation:  "",
+      recipient_bad:      "",
+      recipient_unknown:  "",
+      recipient_rejected: "",
+      recipient_quota:    "",
+      content_rejected:   "",
+      content_filter:     "",
+      content_unsigned:   "",
+      failed_spf:         "",
+      failed_dmarc:       "",
+      failed_dk:          "",
+      failed_dkim:        "",
+      error_resources:    "",
     }
 
     ############################################################################
     # Helpers
     ############################################################################
+
+    # Returns a Success or Bypassed result
+    def ok(msg=nil)
+      REPLY[:ok]
+    end
+
+    def error(code, message=nil)
+      REPLY[code]
+    end
+
+    def abort(code, msg) # Stop it with reason
+      ok
+    end
+
+    def continue # don't stop
+      ok
+    end
 
     def log(msg)
       true
